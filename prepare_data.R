@@ -58,18 +58,18 @@ for(modyear in modyears){
 
   allmod_df <- full_df %>%  
     dplyr::select(-X_pollution, -X_humidity) %>%
-    dplyr::select(cluster, starts_with("X_"), starts_with("O_"), fips, fips_st, regionID) %>%
+    dplyr::select(cluster, starts_with("X_"), starts_with("O_"), fips, fips_st, regionID, year) %>%
     dplyr::select(-X_hsa)  ## has too many categories
 
   ## continuous vars only - model_id 15
   model_id <- 15
   dat15 <- allmod_df %>% 
-    dplyr::select(cluster, X_srcLocDist, X_latitude, X_poverty, X_child, X_adult, X_hospaccess, X_housdensity, X_vaxcovI, X_vaxcovE, X_H3A, X_B, X_priorImmunity, X_anomHumidity, X_singlePersonHH, X_logpopdensity, O_imscoverage, O_insured, O_careseek) 
+    dplyr::select(fips, year, cluster, X_srcLocDist, X_latitude, X_poverty, X_child, X_adult, X_hospaccess, X_housdensity, X_vaxcovI, X_vaxcovE, X_H3A, X_B, X_priorImmunity, X_anomHumidity, X_singlePersonHH, X_logpopdensity, O_imscoverage, O_insured, O_careseek) 
   write_csv(dat15, paste0(gendata_dir, "/modeldata_id", model_id, "_", modyear, ".csv"))
   
   ## continuous and categorical vars - model_id 16
   model_id <- 16 
   dat16 <- allmod_df %>% 
-    dplyr::select(cluster, fips_st, regionID, X_koep, X_urban, X_commut, X_airtraf, X_srcLocDist, X_latitude, X_poverty, X_child, X_adult, X_hospaccess, X_housdensity, X_vaxcovI, X_vaxcovE, X_H3A, X_B, X_priorImmunity, X_anomHumidity, X_singlePersonHH, X_logpopdensity, O_imscoverage, O_insured, O_careseek)
+    dplyr::select(fips, year, cluster, fips_st, regionID, X_koep, X_urban, X_commut, X_airtraf, X_srcLocDist, X_latitude, X_poverty, X_child, X_adult, X_hospaccess, X_housdensity, X_vaxcovI, X_vaxcovE, X_H3A, X_B, X_priorImmunity, X_anomHumidity, X_singlePersonHH, X_logpopdensity, O_imscoverage, O_insured, O_careseek)
   write_csv(dat16, paste0(gendata_dir, "/modeldata_id", model_id, "_", modyear, ".csv"))
 }

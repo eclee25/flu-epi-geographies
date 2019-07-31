@@ -20,8 +20,9 @@ for(modyear in modyears){
   fig_dir <- paste0("figures/flu_clusters_Apr28/id", model_id)
   dir.create(fig_dir, showWarnings = FALSE)
 
-  mod_df <- read_csv(paste0(gendata_dir, "/modeldata_id", model_id, "_", modyear, ".csv")) %>%
+  in_df <- read_csv(paste0(gendata_dir, "/modeldata_id", model_id, "_", modyear, ".csv")) %>%
     dplyr::mutate_if(is.character, as.factor)
+  mod_df <- in_df %>% dplyr::select(-fips, -year)
   outcomes <- unique(mod_df$cluster)
   if(length(outcomes)==2){
     testsetFxn <- testset_2clusters
