@@ -139,6 +139,7 @@ doRandomForest <- function(train, testindexes){
                  xtest = train[testindexes, -ycol],
                  ytest = as.factor(train[testindexes, ycol] %>% unlist %>% unname), 
                  proximity = TRUE,
+                 ntree = 2000,
                  keep.forest = TRUE,
                  localImp = TRUE)
   fit <- do.call(randomForest, params)
