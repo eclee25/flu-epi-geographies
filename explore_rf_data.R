@@ -1,7 +1,7 @@
 library(tidyverse)
 
 model_id <- 15
-perctestset <- 15
+perctestset <- 30
 
 gendata_dir <- "generated_data"
 modyears <- 2003:2009
@@ -54,24 +54,24 @@ special_summ <- function(x){
 
 recode_variable <- function(df){
   dplyr::mutate(df, plt_var = recode(variable,
-                O_careseek = "careseek",
-                O_imscoverage = "coverage",
-                O_insured = "insured",
-                X_adult = "adult",
-                X_anomHumidity = "anomHumidity",
-                X_B = "B",
-                X_child = "child",
-                X_H3A = "H3A",
-                X_hospaccess = "hospaccess",
-                X_housdensity = "housdensity",
+                O_careseek = "careseeking per capita",
+                O_imscoverage = "coverage of dataset",
+                O_insured = "insured proportion",
+                X_adult = "adult proportion",
+                X_anomHumidity = "anomaly in humidity",
+                X_B = "flu-B proportion",
+                X_child = "child proportion",
+                X_H3A = "flu-H3 proportion",
+                X_hospaccess = "hospitals per capita",
+                X_housdensity = "household size",
                 X_latitude = "latitude",
-                X_logpopdensity = "logpopdensity",
-                X_poverty = "poverty",
-                X_priorImmunity = "priorImmunity",
-                X_singlePersonHH = "singlePersonHH",
-                X_srcLocDist = "srcLocDist",
-                X_vaxcovE = "vaxcovE",
-                X_vaxcovI = "vaxcovI"))
+                X_logpopdensity = "log population density",
+                X_poverty = "propotion in poverty",
+                X_priorImmunity = "prior immunity",
+                X_singlePersonHH = "1-person household",
+                X_srcLocDist = "source location distance",
+                X_vaxcovE = "elderly vaccination",
+                X_vaxcovI = "toddler vaccination"))
 }
 
 mean_min_depth <- imp %>%
@@ -84,8 +84,9 @@ mean_min_depth <- imp %>%
 accuracy_decrease <- imp %>%
   group_by(variable) %>%
   summarise(special_summ(accuracy_decrease)) %>%
+  dplyr::arrange(mean) %>%
   recode_variable %>%
-  dplyr::mutate(plt_var = factor(plt_var, levels = mean_min_depth$plt_var))
+  dplyr::mutate(plt_var = factor(plt_var, levels = plt_var))
 
 ggplot(mean_min_depth, aes(x = mean, y = plt_var)) +
   geom_point() +
@@ -93,6 +94,7 @@ ggplot(mean_min_depth, aes(x = mean, y = plt_var)) +
   theme_bw() +
   scale_x_continuous("Mean minimum tree depth\nacross influenza seasons") +
   theme(axis.title.y = element_blank())
+ggsave(paste0(fig_dir, "/explore_rf_id", model_id, "_test", perctestset, "_mindepth2.png"), width = 4, height = 5)
 
 ggplot(accuracy_decrease, aes(x = mean, y = plt_var)) +
   geom_point() +
@@ -100,7 +102,7 @@ ggplot(accuracy_decrease, aes(x = mean, y = plt_var)) +
   theme_bw() +
   scale_x_continuous("Mean decrease in accuracy\nacross influenza seasons") +
   theme(axis.title.y = element_blank())
-
+ggsave(paste0(fig_dir, "/explore_rf_id", model_id, "_test", perctestset, "_decrease2.png"), width = 4, height = 5)
 
 # pred <- read_csv(paste0(gendata_dir, "/pred_clusters_id", model_id, "_test", perctestset, "_seed", mseed, "_m", modyear, "_p", predyear, ".csv"))
 
