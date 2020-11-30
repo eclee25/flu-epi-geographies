@@ -4,7 +4,7 @@ library(randomForest)
 
 source("utils.R")
 model_id <- 15
-perctestset <- 30
+perctestset <- 15
 
 cov_dir <- "data"
 resp_dir <- "data/flu_clusters_Apr28/Partitions"
@@ -51,7 +51,7 @@ for(modyear in modyears){
       dplyr::left_join(rf_pred %>% dplyr::select(fips, pred) %>% dplyr::rename(node1 = fips, pred1 = pred)) %>%
       dplyr::left_join(rf_pred %>% dplyr::select(fips, pred) %>% dplyr::rename(node2 = fips, pred2 = pred)) %>%
       dplyr::mutate(samePredGroup = ifelse(pred1==pred2, 1, 0)) %>%
-      dplyr::filter(node1 < node2) %>% ## rm duplicated node pairs and self-edges
+      dplyr::filter(as.numeric(node1) < as.numeric(node2)) %>% ## rm duplicated node pairs and self-edges
       dplyr::mutate(node_pairs = paste(node1, node2, sep = "_")) %>%
       dplyr::select(-node1, -node2)
 
@@ -60,7 +60,7 @@ for(modyear in modyears){
       dplyr::left_join(rf_pred %>% dplyr::select(fips, actual) %>% dplyr::rename(node1 = fips, actual1 = actual)) %>%
       dplyr::left_join(rf_pred %>% dplyr::select(fips, actual) %>% dplyr::rename(node2 = fips, actual2 = actual)) %>%
       dplyr::mutate(sameTrueGroup = ifelse(actual1==actual2, 1, 0)) %>%
-      dplyr::filter(node1 < node2) %>% ## rm duplicated node pairs and self-edges
+      dplyr::filter(as.numeric(node1) < as.numeric(node2)) %>% ## rm duplicated node pairs and self-edges
       dplyr::mutate(node_pairs = paste(node1, node2, sep = "_")) %>%
       dplyr::select(-node1, -node2)
 
